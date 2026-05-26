@@ -6,7 +6,7 @@ test.beforeEach(async({page})=>{
 });
 
 test('Invicti Get a Demo - fills form and validates inputs', async ({ page }) => {
-  const demoPage = new DemoPage(page);
+  const demoPage = new DemoPage(page);  
   await demoPage.openDemoForm();
   await demoPage.fillInEmailDetails('elsy.smith@tana.com');
   await demoPage.clickNext();
