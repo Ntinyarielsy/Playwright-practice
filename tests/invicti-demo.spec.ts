@@ -19,6 +19,7 @@ test('Invicti Get a Demo - fills form and validates inputs', async ({ page }) =>
 
   await demoPage.submitForm();
 
-  await page.locator('text=Thank you!').waitFor({ state: 'visible', timeout: 15000 });
-  await expect(page.locator('text=Thank you!')).toBeVisible();
+  await page.waitForURL('**/getting-started', { timeout: 30000 });
+  const thankHeading = page.getByRole('heading', { name: 'Thank you!' }).first();
+  await expect(thankHeading).toBeVisible();
 });
