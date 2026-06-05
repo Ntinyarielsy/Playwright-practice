@@ -1,5 +1,5 @@
 # Use the official Microsoft Playwright Docker image so browsers and Playwright are pre-installed.
-image: mcr.microsoft.com/playwright:v1.59.1-focal
+image: mcr.microsoft.com/playwright:v1.59.1-jammy
 
 # Cache node modules between pipeline runs to speed up build time.
 cache:
