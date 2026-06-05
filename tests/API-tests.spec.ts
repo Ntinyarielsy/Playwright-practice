@@ -22,7 +22,12 @@ test('Hybrid: favorite first article via API, verify in UI profile', async ({ pa
     const loginResp = await request.post(`${API_BASE}/users/login`, {
         data: { user: credentials },
     });
-    const { user } = await loginResp.json();
+    expect(loginResp.ok()).toBeTruthy();
+    const loginBody = await loginResp.json();
+    const user = loginBody?.user;
+    if (!user?.token) {
+        throw new Error(`Login failed: ${loginResp.status()} ${JSON.stringify(loginBody)}`);
+    }
     const token: string = user.token;
     const username: string = user.username;
 

@@ -19,7 +19,6 @@ test('Invicti Get a Demo - fills form and validates inputs', async ({ page }) =>
 
   await demoPage.submitForm();
 
-  await page.waitForURL('**/getting-started', { timeout: 30000 });
-  const thankHeading = page.getByRole('heading', { name: 'Thank you!' }).first();
-  await expect(thankHeading).toBeVisible();
+  const thankHeading = page.locator('h2:has-text("Thank you!")').first();
+  await expect(thankHeading).toBeVisible({ timeout: 15000 });
 });

@@ -53,6 +53,9 @@ export class DemoPage {
   async submitForm() {
     const submitButton = this.page.locator('input[type="submit"]');
     await this.assertSubmitButtonReady();
-    await submitButton.click();
+    await Promise.all([
+      this.page.waitForURL('**/getting-started', { timeout: 30000 }),
+      submitButton.click(),
+    ]);
   }
 }
