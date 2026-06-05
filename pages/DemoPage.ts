@@ -1,46 +1,58 @@
 import { Page, expect } from "@playwright/test";
 
+export interface DemoFormData {
+  email: string;
+  firstName: string;
+  lastName: string;
+  company: string;
+  phone: string;
+}
+
 export class DemoPage {
-    readonly page: Page;
+  readonly page: Page;
 
-    constructor(page: Page) {
-        this.page = page;
-    }
+  constructor(page: Page) {
+    this.page = page;
+  }
 
-    async openDemoForm() {
-        await this.page.locator('.navbar_menu-button').getByRole('link', { name: 'Get a demo' }).click();
+  async openDemoForm() {
+    await this.page.goto('https://www.invicti.com/get-demo');
+  }
 
-    }
+  async fillDemoForm(data: DemoFormData) {
+    const emailField = this.page.locator('#Email');
+    const firstNameField = this.page.locator('#First-Name');
+    const lastNameField = this.page.locator('#Last-Name');
+    const companyField = this.page.locator('#Company');
+    const phoneField = this.page.locator('#Phone');
 
-    async fillInEmailDetails(email: string) {
-        await this.page.locator('#email').fill(email);
-        await expect(this.page.locator('#email')).toHaveValue(email);
-    }
+    await emailField.waitFor({ state: 'visible', timeout: 15000 });
 
-    async clickNext() {
-        await this.page.getByRole('link', { name: 'Next →' }).click();
-    }
-    async fillInFirstNameLastNameAndCompanyDetails(firstName: string, lastName: string, company: string) {
-        await this.page.getByRole('textbox', { name: 'First Name' }).fill(firstName);
-        await expect(this.page.getByRole('textbox', { name: 'First Name' })).toHaveValue(firstName);
+    await emailField.fill(data.email);
+    await expect(emailField).toHaveValue(data.email);
 
-        await this.page.getByRole('textbox', { name: 'Last Name' }).fill(lastName);
-        await expect(this.page.getByRole('textbox', { name: 'Last Name' })).toHaveValue(lastName);
+    await firstNameField.fill(data.firstName);
+    await expect(firstNameField).toHaveValue(data.firstName);
 
-        await this.page.getByRole('textbox', { name: 'Company' }).fill(company);
-        await expect(this.page.getByRole('textbox', { name: 'Company' })).toHaveValue(company);
-    }
+    await lastNameField.fill(data.lastName);
+    await expect(lastNameField).toHaveValue(data.lastName);
 
-    async submitPhone(phone: string) {
-        await this.page.locator('#Phone').fill(phone);
-        await expect(this.page.locator('#Phone')).toHaveValue(phone);
-    }
-    async assertSubmitButtonReady() {
-        const submitButton = this.page.locator('[data-form="submit-btn"]');
-        await expect(submitButton).toBeVisible();
-        await expect(submitButton).toBeEnabled();
-    }
+    await companyField.fill(data.company);
+    await expect(companyField).toHaveValue(data.company);
 
+    await phoneField.fill(data.phone);
+    await expect(phoneField).toHaveValue(data.phone);
+  }
 
+  async assertSubmitButtonReady() {
+    const submitButton = this.page.locator('input[type="submit"]');
+    await expect(submitButton).toBeVisible();
+    await expect(submitButton).toBeEnabled();
+  }
 
+  async submitForm() {
+    const submitButton = this.page.locator('input[type="submit"]');
+    await this.assertSubmitButtonReady();
+    await submitButton.click();
+  }
 }

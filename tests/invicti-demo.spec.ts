@@ -1,18 +1,24 @@
-import { test } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { DemoPage } from '../pages/DemoPage';
 
-test.beforeEach(async({page})=>{
-    await page.goto("https://www.invicti.com");
+test.beforeEach(async ({ page }) => {
+  const demoPage = new DemoPage(page);
+  await demoPage.openDemoForm();
 });
 
 test('Invicti Get a Demo - fills form and validates inputs', async ({ page }) => {
-  const demoPage = new DemoPage(page);  
-  await demoPage.openDemoForm();
-  await demoPage.fillInEmailDetails('elsy.smith@tana.com');
-  await demoPage.clickNext();
-  await demoPage.fillInFirstNameLastNameAndCompanyDetails('Elsy', 'Smith', 'Tana');
-  await demoPage.clickNext();
-  await demoPage.submitPhone('0788652345');
-  await demoPage.assertSubmitButtonReady();
+  const demoPage = new DemoPage(page);
 
-})
+  await demoPage.fillDemoForm({
+    email: 'elsy.smith@tana.com',
+    firstName: 'Elsy',
+    lastName: 'Smith',
+    company: 'Tana',
+    phone: '0788652345',
+  });
+
+  await demoPage.submitForm();
+
+  await page.locator('text=Thank you!').waitFor({ state: 'visible', timeout: 15000 });
+  await expect(page.locator('text=Thank you!')).toBeVisible();
+});
