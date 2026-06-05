@@ -26,7 +26,13 @@ playwright_test:
   artifacts:
     when: always
     paths:
+      # Browsable HTML report (download, unzip, open index.html).
+      - playwright-report/
+      # Traces, screenshots and error context for failed tests.
       - test-results/
+    reports:
+      # Surfaces per-test pass/fail in the pipeline/MR "Tests" tab.
+      junit: results.xml
     expire_in: 1 week
   only:
     - main
