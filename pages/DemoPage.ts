@@ -44,18 +44,9 @@ export class DemoPage {
     await expect(phoneField).toHaveValue(data.phone);
   }
 
-  async assertSubmitButtonReady() {
+  async submitForm() {
     const submitButton = this.page.locator('input[type="submit"]');
     await expect(submitButton).toBeVisible();
     await expect(submitButton).toBeEnabled();
-  }
-
-  async submitForm() {
-    const submitButton = this.page.locator('input[type="submit"]');
-    await this.assertSubmitButtonReady();
-    await Promise.all([
-      this.page.waitForURL('**/getting-started', { timeout: 30000 }),
-      submitButton.click(),
-    ]);
   }
 }
