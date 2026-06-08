@@ -1,18 +1,30 @@
 # Use the official Microsoft Playwright Docker image so browsers and Playwright are pre-installed.
 image: mcr.microsoft.com/playwright:v1.59.1-jammy
 
-# Cache node modules between pipeline runs to speed up build time.
-cache:
-  paths:
-    - node_modules/
-
 # Define the stages used by the pipeline.
 stages:
+  - install
   - test
+  - report
 
 variables:
   # Ensure the pipeline runs in CI mode.
   CI: "true"
+
+# Cache node modules between pipeline runs & playwright browser dowloads and lockfiles to speed up build time.
+cache:
+  paths:
+    - node_modules/
+    - ~/.cache/ms-playwright/
+
+# Install dependencies before running tests.
+before_script:
+  - npm ci
+
+install_dependencies:
+  stage: install
+  script:
+    - echo "Dependencies installed"
 
 playwright_test:
   stage: test
@@ -34,5 +46,14 @@ playwright_test:
       # Surfaces per-test pass/fail in the pipeline/MR "Tests" tab.
       junit: results.xml
     expire_in: 1 week
-  only:
-    - main
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+  
+report:
+  stage: report
+  script:
+    - echo "Generate report or upload artifacts"
+  needs:
+    - job: playwright_test
+      artifacts: true
